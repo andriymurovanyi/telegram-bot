@@ -4,8 +4,8 @@ const config = {
     },
 
     telegram:{
-        bot_token: "719697093:AAHe-2NB3ryxErWD0YtHtUGZqnJMwZBkToA",
-        group_id: "-386361133"
+        bot_token: "YOUR-BOT-TOKEN-HERE",
+        group_id: "YOUR-GROP-ID-HERE"
     },
 
     db:{
