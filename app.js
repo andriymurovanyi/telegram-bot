@@ -1,55 +1,61 @@
-const fs = require("fs");
-
+// Server
 const express = require("express");
 const bodyParser = require("body-parser");
+const MongoClient = require("mongodb").MongoClient;
+const hbs = require("hbs");
+
 const config = require("./config");
+const bot = require("./bot-controller");
 
-const TelegramBot = require("node-telegram-bot-api");
-const bot = new TelegramBot(config.telegram.bot_token, {polling: true});
+const app = express();
+app.set("view-engine", "hbs");
 
+hbs.registerPartials(__dirname + "/views/partials");
 
-bot.on('message', async msg => {
-    const send_id = msg.chat.id;
-    bot.sendMessage(send_id, "Fuck you, Suka!");
-    console.log(send_id);
-    const messages = await bot.getUpdates(offset = null);
-    console.log(messages);
-    console.log(messages.length);
+app.use(express.static(__dirname + "/public"));
 
+const urlencodedParser = bodyParser.urlencoded({extended: false});
+const mongoClient = new MongoClient(config.db.connectionString, {
+    useNewUrlParser: config.db.newUrlParser
 });
 
-bot.onText(/\/start/, async function (msg) {
-    let send_id = msg.chat.id;
+let dbClient;
+let receiver_id;
 
-    // let promise = new Promise(resolve => {
-    //
-    // });
-    await console.log(bot.getUpdates());
-    const botName = getBotName();
-    bot.sendMessage(send_id, `Hi, my name is ${botName}\nWhat you want to do ?`);
+mongoClient.connect(function(err, client){
+    if(err) return console.log(err);
+    dbClient = client;
+    app.locals.collection = client.db("telegram-db").collection("messages");
 });
 
-
-async function getBotName(){
-    const botInfo = await bot.getMe();
-    const botName = JSON.stringify(botInfo).username;
-    console.log(botInfo);
-    console.log(botName);
-    return botName;
-}
-
-
-bot.onText(/\/parse/, function (msg) {
-    let send_id = msg.chat.id;
-    bot.sendMessage(send_id, 'Let\'s start to parse this shit!');
+app.get("/", async (req, res) => {
+    const collection = req.app.locals.collection;
+    collection.find({}).toArray(function(err, messages){
+        if(err) return console.log(err);
+        res.render('index.hbs', {messages: messages});
+    });
 });
 
+app.post("/", urlencodedParser, async (req, res) => {
 
-bot.onText(/\/help (.+)+/, (msg, match) => {
-    let send_id = msg.chat.id;
-    let response = match[1];
-    bot.sendMessage(send_id, `As i see, you need help with ${response}`);
+    if(!req.body) return res.sendStatus(400);
+    console.log(req.body);
+
+    bot.sendMessage(config.telegram.group_id, req.body.txt);
+    res.end();
 });
+
+const port = config.app.port;
+app.listen(port, console.log(`Server was started on ${port}`));
+
+module.exports = app;
+
+
+
+
+
+
+
 
 
 
