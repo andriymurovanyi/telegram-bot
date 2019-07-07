@@ -5,7 +5,7 @@ const config = {
 
     telegram:{
         bot_token: "YOUR-BOT-TOKEN-HERE",
-        group_id: "YOUR-GROP-ID-HERE"
+        group_id: "YOUR-GROUP-ID-HERE" // can be found in log.txt
     },
 
     db:{
