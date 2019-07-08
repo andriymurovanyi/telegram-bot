@@ -20,7 +20,6 @@ const mongoClient = new MongoClient(config.db.connectionString, {
 });
 
 let dbClient;
-let receiver_id;
 
 mongoClient.connect(function(err, client){
     if(err) return console.log(err);
@@ -29,38 +28,35 @@ mongoClient.connect(function(err, client){
 });
 
 app.get("/", async (req, res) => {
+    res.render('index.hbs');
+});
+
+app.get("/messages", (req, res) => {
     const collection = req.app.locals.collection;
-    collection.find({}).toArray(function(err, messages){
-        if(err) return console.log(err);
-        res.render('index.hbs', {messages: messages});
-    });
+    collection.find({}).toArray((err, messages) => {
+        if (err) return console.log(err);
+        res.send(messages);
+    })
+});
+
+app.get("/messages/:username", (req, res) => {
+    const collection = req.app.locals.collection;
+    let username = req.params["username"];
+    console.log(username);
+    collection.find({"from.username": username}).toArray(function (err, data) {
+        if (err) return console.log(err);
+        res.send(data);
+    })
 });
 
 app.post("/", urlencodedParser, async (req, res) => {
-
     if(!req.body) return res.sendStatus(400);
     console.log(req.body);
-
     bot.sendMessage(config.telegram.group_id, req.body.txt);
-    res.end();
+    res.sendStatus(200);
 });
 
 const port = config.app.port;
 app.listen(port, console.log(`Server was started on ${port}`));
 
 module.exports = app;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -5,14 +5,14 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="./css/style.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
     <title>Chat info</title>
 </head>
 <body>
     {{> header}}
-
+<!-- Body  -->
     <table id="main_table" class="table table-condensed table-striped table-bordered">
         <tr>
             <th>From</th>
@@ -25,11 +25,9 @@
             <td>{{this.date}}</td>
             {{#if this.text}}
                 <td>{{this.text}}</td>
-
             {{else}}
                 <td>{{this.photo.0.file_id}}</td>
             {{/if}}
-
         </tr>
         {{/each}}
     </table>
@@ -44,30 +42,7 @@
 
     {{> footer}}
 
-    <script>
-        $(function () {
-            $("#text_form").submit(function (e) {
-                let $form = $(this);
-                $.ajax({
-                    type: "POST",
-                    url: "/",
-                    data: $form.serialize()
-                }).done(function () {
-                    console.log("Success");
-                }).fail(function () {
-                    console.log("fail");
-                });
-
-                let message = `<tr>
-                                    <td>Bot</td>
-                                    <td>${new Date().toLocaleString()}</td>
-                                    <td>${$("#t").val()}</td>
-                               </tr>`;
-                $("#main_table").append(message);
-                $('#text_form')[0].reset();
-                e.preventDefault();
-            });
-        });
-    </script>
+<!-- Link script -->
+    <script src="./js/index.controller.js"></script>
 </body>
 </html>

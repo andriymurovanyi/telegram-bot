@@ -1,0 +1,4 @@
+1) Fix images.
+2) Messages sent from bot must be saved to db.
+3) Add more filters.
+To be continued...

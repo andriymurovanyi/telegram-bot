@@ -21,7 +21,8 @@ bot.on('message', async msg => {
 
     if (msg.text === "/start"){
         console.log(send_id);
-        bot.sendMessage(send_id, `Hi, my name is TScrapperBot\nWhat you want to do ?`);
+        bot.sendMessage(send_id, `Hi, my name is TScrapperBot\n
+                                       What you want to do ?`);
     }
 
     else if (msg.text === "/help"){
@@ -49,9 +50,7 @@ bot.on('message', async msg => {
             messages[i].message.date * 1000)
             .toLocaleString()
             .split(" ");
-
         data.push(messages[i].message);
-        console.log(messages[i].message.photo[0]);
     }
 
     mongoClient.connect(function(err, client){
